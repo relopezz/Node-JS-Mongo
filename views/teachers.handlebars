@@ -1,0 +1,77 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>How to add calendar using jQuery and fullCalendar</title>
+	<!--FullCalendar Dependencies-->
+    <link rel='stylesheet' href='css/style.css' />
+	<script src='js/jquery.min.js'></script>
+	<script type="text/javascript">
+
+
+</script>
+</body>
+    <h1>ALl the School Teachers<h1>
+        <a href="#" class="add-Teacher">Add Teacher </a>
+
+        <ul>
+            {{#each teachers}}
+                <li>{{name}} {{last_name}}!! -- <a href="/teacher/{{_id}}" >Schedule</a></li>
+            {{/each}}
+        </ul>
+
+
+
+        <div id="dialog" class="dialog hidden">
+            <div class="dialog-box">
+                <div class="row" style="text-align:right">
+                    <a href="#" class='close-Dialog'>Close</a>
+                </div>
+                <div class="row small-margin">
+                    <div>Name: </div>
+                    <div><input type='text' class="input-name" value="John"> </div>
+                </div>
+                <div class="clearfix"/>
+
+                <div class="row small-margin">
+                    <div>Start: </div>
+                    <div><input type='text' class="input-las_name" value="Smith"> </div>
+                </div>
+                <div class="row small-margin">
+                    <div>End: </div>
+                    <div><input type='text' class="input-email" value="x@gmail.com"> </div>
+                </div>
+                <div class="row small-margin">
+                    <input type='button' class="add-teacher-btn" value="Add Teacher">
+                </div>
+            </div>
+        </div>
+    <script>
+        var host_url = '{{host_url}}';
+        $(function() {
+
+            $('.add-Teacher').click(function(){
+                $('#dialog').removeClass('hidden');
+            });
+
+            $('.close-Dialog').click(function(){
+                $('#dialog').addClass('hidden');
+            });
+
+            $('.add-teacher-btn').click(function(){
+
+                var url = host_url;
+                $('#dialog').addClass('hidden');
+
+                $.post(host_url + "/api/teacher/", {
+                    name: $('.input-name').val(),
+                    las_name: $('.input-last_name').val(),
+                    email: $('.input-email').val(),
+                },function( msg ) {
+                    alert("Your TEACHER have been created !!!! Refresh your PAGE!!!")
+              });
+            });
+
+        });
+    </script>
+</html>

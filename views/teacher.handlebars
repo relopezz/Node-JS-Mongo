@@ -1,0 +1,173 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{teacher.name}}</title>
+	<!--FullCalendar Dependencies-->
+	<link rel='stylesheet' href='/css/fullcalendar.css' />
+    <link rel='stylesheet' href='/css/style.css' />
+	<script src='/js/jquery.min.js'></script>
+	<script src='/js/moment.min.js'></script>
+	<script src='/js/fullcalendar/fullcalendar.js'></script>
+	<script type="text/javascript">
+
+		/*
+			jQuery document ready
+		*/
+
+$(document).ready(function() {
+/*
+	date store today date.
+	d store today date.
+	m store current month.
+	y store current year.
+*/
+var date = new Date();
+var d = date.getDate();
+var m = date.getMonth();
+var y = date.getFullYear();
+
+
+var calendar = $('#calendar').fullCalendar(
+{
+	
+	header:
+	{
+		left: 'prev,next today',
+		center: 'title',
+		right: 'month,agendaWeek,agendaDay'
+	},
+	
+	defaultView: 'month',
+	
+	selectable: true,
+	selectHelper: true,
+	
+	select: function(start, end, allDay)
+	{
+		
+		if (title)
+		{
+			calendar.fullCalendar('renderEvent',
+				{
+					title: title,
+					start: start,
+					end: end,
+					allDay: allDay
+				},
+				true // make the event "stick"
+			);
+		}
+		calendar.fullCalendar('unselect');
+	},
+	
+	editable: true,
+	
+	events: [
+        {{#each teacher.classes}}
+            {
+                title: '{{name}}',
+                start: '{{start}}',
+                end:   '{{end}}'
+            },
+        {{/each}}
+    ]
+});
+
+});
+
+</script>
+	<style type="text/css">
+		body
+		{
+			margin-top: 40px;
+			text-align: center;
+			font-size: 14px;
+			font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		}
+		#calendar
+		{
+			width: 900px;
+			margin: 0 auto;
+		}
+
+	</style>
+</head>
+<body>
+    <h1>{{teacher.name}} Schedule</h1>
+    <a href="#" class="add-Class">CLICK here to add Class</div>
+
+	<!--FullCalendar container div-->
+	<div id='calendar' class="small-margin"></div>
+	<div id = 'modal' ></div>
+
+    <div id="dialog" class="dialog hidden">
+        <div class="dialog-box">
+            <div class="row" style="text-align:right">
+                <a href="#" class='close-Dialog'>Close</a>
+            </div>
+            <div class="row small-margin">
+                <div>Name: </div>
+                <div><input type='text' class="input-name" value="English"> </div>
+            </div>
+            <div class="clearfix"/>
+
+            <div class="row small-margin">
+                <div>Start: </div>
+                <div><input type='text' class="input-start" value="2015-07-03 12:00 PM"> </div>
+            </div>
+            <div class="row small-margin">
+                <div>End: </div>
+                <div><input type='text' class="input-end" value="2015-07-03 12:30 PM"> </div>
+            </div>
+            <div class="row small-margin">
+                <input type='button' class="add-Class-btn" value="Add Class">
+            </div>
+        </div>
+    </div>
+<script>
+    var host_url = '{{host_url}}';
+    var teacherId = '{{teacher.id}}';
+
+    $(function() {
+
+        $('.add-Class').click(function(){
+            $('#dialog').removeClass('hidden');
+        });
+
+        $('.close-Dialog').click(function(){
+            $('#dialog').addClass('hidden');
+        });
+
+        $('.add-Class-btn').click(function(){
+
+            var url = host_url;
+
+            $('#dialog').addClass('hidden');
+
+            $.ajax({
+                url: host_url + "/api/teacher/class",
+                type: "POST",
+                data: {
+                    teacher_id: teacherId,
+                    name: $('.input-name').val(),
+                    start: $('.input-start').val(),
+                    end: $('.input-end').val(),
+                },
+                success: function(data) {
+                    //Refresh page for now to update calendar
+                    alert("SUCCESS!!!: Your class have been created Refresh your PAGE")
+                },
+                error: function(error){
+                    alert("ERROR!!!: " + error.responseText)
+                }
+            });
+
+        });
+
+    });
+</script>
+</body>
+
+
+</html>
